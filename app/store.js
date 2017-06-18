@@ -11,7 +11,11 @@ export function Store(initialState = {}) {
 }
 
 const INITIAL_STATE = {
-    products: [{ name: 'xbox' }, { name: 'playstation' }],
+    game: {
+        squares: Array(9).fill(null),
+        currentPlayer: 'X',
+        winner: null,
+    },
 };
 
 const store = new Store(INITIAL_STATE);
