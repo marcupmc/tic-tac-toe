@@ -1,28 +1,18 @@
 import React from 'react';
-import Square from './Square';
+import { connect } from 'react-redux';
 
+import Square from './Square';
+import { addTokenOnBoard } from '../actions/game';
 import { calculateWinner } from '../utils/game';
 
 class Board extends React.Component {
 
-    constructor(props) {
-        super();
-        this.state = {
-            squares: Array(9).fill(null),
-            currentPlayer: 'X',
-        }
-    }
-
     handleClick(numSquare) {
-        const squares = this.state.squares.slice();
-        if (calculateWinner(squares) || squares[numSquare]) {
+        const {dispatch, squares, currentPlayer, winner} = this.props;
+        if (winner || squares[numSquare]) {
             return;
         }
-        squares[numSquare] = this.state.currentPlayer;
-        this.setState({
-            squares: squares,
-            currentPlayer: this.state.currentPlayer === 'X' ? 'O': 'X',
-        });
+        dispatch(addTokenOnBoard(currentPlayer, numSquare));
     }
 
     resetBoard() {
@@ -33,16 +23,16 @@ class Board extends React.Component {
     }
 
     renderSquare(i) {
-        return (<Square value={this.state.squares[i]} onClick={() => this.handleClick(i)} />);
+        return (<Square value={this.props.squares[i]} onClick={() => this.handleClick(i)} />);
     }
 
     render() {
-        const winner = calculateWinner(this.state.squares);
+        const { winner, currentPlayer } = this.props;
         let status;
         if (winner) {
             status = `Winner: ${winner}`;
         } else {
-            status = `Next player: ${this.state.currentPlayer}`;
+            status = `Next player: ${currentPlayer}`;
         }
         return (
               <div>
@@ -68,4 +58,13 @@ class Board extends React.Component {
     }
 }
 
-export default Board;
+function mapStateToProps(state) {
+    const game = _.get(state, 'game');
+    return {
+        squares: game.squares,
+        currentPlayer: game.currentPlayer,
+        winner: game.winner,
+    };
+}
+
+export default connect(mapStateToProps)(Board);
