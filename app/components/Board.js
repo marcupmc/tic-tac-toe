@@ -1,8 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
-
+import _ from 'lodash';
 import Square from './Square';
-import { addTokenOnBoard } from '../actions/game';
+import { addTokenOnBoard, resetBoard } from '../actions/game';
 import { calculateWinner } from '../utils/game';
 
 class Board extends React.Component {
@@ -16,10 +16,7 @@ class Board extends React.Component {
     }
 
     resetBoard() {
-        this.setState({
-            squares: Array(9).fill(null),
-            currentPlayer: 'X',
-        });
+        this.props.dispatch(resetBoard());
     }
 
     renderSquare(i) {

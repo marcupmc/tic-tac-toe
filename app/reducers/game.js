@@ -11,6 +11,13 @@ export default function game(state = {}, action) {
             currentPlayer: action.player === 'X' ? 'O' : 'X',
             winner: calculateWinner(newSquares),
         }
+    case 'RESET_BOARD':
+        return {
+            ...state,
+            squares: Array(9).fill(null),
+            currentPlayer: 'X',
+            winner: null,
+        }
     default:
         return state;
     }

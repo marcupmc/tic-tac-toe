@@ -6,3 +6,9 @@ export function addTokenOnBoard(player, numSquare) {
         numSquare,
     };
 }
+
+export function resetBoard() {
+    return {
+        type: 'RESET_BOARD',
+    }
+}
