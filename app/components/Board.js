@@ -1,35 +1,67 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import _ from 'lodash';
 import Square from './Square';
+import { addTokenOnBoard, resetBoard } from '../actions/game';
+import { calculateWinner } from '../utils/game';
 
 class Board extends React.Component {
+
+    handleClick(numSquare) {
+        const {dispatch, squares, currentPlayer, winner} = this.props;
+        if (winner || squares[numSquare]) {
+            return;
+        }
+        dispatch(addTokenOnBoard(currentPlayer, numSquare));
+    }
+
+    resetBoard() {
+        this.props.dispatch(resetBoard());
+    }
+
     renderSquare(i) {
-        return <Square />;
+        return (<Square value={this.props.squares[i]} onClick={() => this.handleClick(i)} />);
     }
 
     render() {
-        const status = 'Next player: X';
-
+        const { winner, currentPlayer } = this.props;
+        let status;
+        if (winner) {
+            status = `Winner: ${winner}`;
+        } else {
+            status = `Next player: ${currentPlayer}`;
+        }
         return (
               <div>
+                  { winner ? <div><button onClick={ () => this.resetBoard()}>New Game ?</button></div> : null}
                   <div className="status">{status}</div>
                   <div className="board-row">
-                      <Square />
-                      <Square />
-                      <Square />
+                      {this.renderSquare(0)}
+                      {this.renderSquare(1)}
+                      {this.renderSquare(2)}
                   </div>
                   <div className="board-row">
-                      <Square />
-                      <Square />
-                      <Square />
-                    </div>
+                      {this.renderSquare(3)}
+                      {this.renderSquare(4)}
+                      {this.renderSquare(5)}
+                  </div>
                   <div className="board-row">
-                      <Square />
-                      <Square />
-                      <Square />
+                      {this.renderSquare(6)}
+                      {this.renderSquare(7)}
+                      {this.renderSquare(8)}
                   </div>
               </div>
         );
     }
 }
 
-export default Board;
+function mapStateToProps(state) {
+    const game = _.get(state, 'game');
+    return {
+        squares: game.squares,
+        currentPlayer: game.currentPlayer,
+        winner: game.winner,
+    };
+}
+
+export default connect(mapStateToProps)(Board);
