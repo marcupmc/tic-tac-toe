@@ -25,6 +25,13 @@ class Board extends React.Component {
         });
     }
 
+    resetBoard() {
+        this.setState({
+            squares: Array(9).fill(null),
+            currentPlayer: 'X',
+        });
+    }
+
     renderSquare(i) {
         return (<Square value={this.state.squares[i]} onClick={() => this.handleClick(i)} />);
     }
@@ -39,6 +46,7 @@ class Board extends React.Component {
         }
         return (
               <div>
+                  { winner ? <div><button onClick={ () => this.resetBoard()}>New Game ?</button></div> : null}
                   <div className="status">{status}</div>
                   <div className="board-row">
                       {this.renderSquare(0)}
